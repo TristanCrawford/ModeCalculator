@@ -42,12 +42,12 @@ end
 
 options = {}
 OptionParser.new do |opts|
-    opts.banner = 'Required Options: -t (STRING Tuning), -f (INT Frets), -k (STRING Key), -m (STRING Mode)' 
+    opts.banner = 'OPTIONS ARE REQUIRED' 
 
-    opts.on('-t TUNING', '--tuning=TUNING', String, 'String Tuning') do |v| options[:strings] = v end
-    opts.on('-f FRETS', '--frets=FRETS', Integer, 'Number Of Frets') do |v| options[:frets] = v end
-    opts.on('-k KEY', '--key=KEY', String, 'Key You\'re Playing In') do |v| options[:key] = v end
-    opts.on('-m MODE', '--mode=MODE', String, 'Desired Mode') do |v| options[:mode] = v end
+    opts.on('-t TUNING', '--tuning=TUNING', String, 'String Tuning ( eg. EADGBE )') do |v| options[:strings] = v end
+    opts.on('-f FRETS', '--frets=FRETS', Integer, 'Number Of Frets ( eg. 24 )') do |v| options[:frets] = v end
+    opts.on('-k KEY', '--key=KEY', String, 'Desired Key ( eg. G# )') do |v| options[:key] = v end
+    opts.on('-m MODE', '--mode=MODE', String, 'Desired Mode ( Ionian, Aeolian, Phrygian, Dorian, Lydian, Mixolydian, Locrian )') do |v| options[:mode] = v end
 end.parse!
 
 puts generate_fretboard options[:strings], options[:frets], options[:key], options[:mode]
