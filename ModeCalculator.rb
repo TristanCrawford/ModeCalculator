@@ -1,22 +1,23 @@
+require 'optparse'
+
 # Chromatic Scale In The Key Of C
 C_SCALE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
 # Mode Intervals
-MAJOR_MODES = { 'Ionian' => '02212221', 'Dorian' => '02122212', 'Phrygian' => '01222122', 'Lydian' => '02221221', 'Mixolydian' => '02212212', 'Aeolian' => '02122122', 'Locrian' => '01221222' }
-MINOR_MODES = { 'Aeolian' => '02122122', 'Locrian' => '01221222', 'Ionian' => '02212221', 'Dorian' => '02122212', 'Phrygian' => '01222122', 'Lydian' => '02221221', 'Mixolydian' => '02212212' }
+MODES = { 'Ionian' => '02212221', 'Dorian' => '02122212', 'Phrygian' => '01222122', 'Lydian' => '02221221', 'Mixolydian' => '02212212', 'Aeolian' => '02122122', 'Locrian' => '01221222' }
 
-def generate_fretboard(strings, frets, key, major, mode)
+def generate_fretboard(strings, frets, key, mode)
 
     result = ''
     
-    intervals = major ? MAJOR_MODES[mode].chars.map(&:to_i) : MINOR_MODES[mode].chars.map(&:to_i)
+    intervals = MODES[mode].chars.map(&:to_i)
 
     scale = C_SCALE.rotate(C_SCALE.index(key))
     p "#{key} Chromatic Scale: #{scale.join ', '}"
 
     $n = 0
     semitones = intervals.map { |v| $n += v; scale[$n] }.first 7
-    p "Semitones In #{mode} #{major ? 'Major' : 'Minor'}: #{semitones.join ', '}"
+    p "Semitones In #{key} #{mode}: #{semitones.join ', '}"
 
     
     strings.chars.reverse.each do |s|
@@ -39,4 +40,14 @@ def generate_fretboard(strings, frets, key, major, mode)
     result
 end
 
-puts generate_fretboard 'AEADGBE', 24, 'A', true, 'Ionian'
+options = {}
+OptionParser.new do |opts|
+    opts.banner = 'Required Options: -t (STRING Tuning), -f (INT Frets), -k (STRING Key), -m (STRING Mode)' 
+
+    opts.on('-t TUNING', '--tuning=TUNING', String, 'String Tuning') do |v| options[:strings] = v end
+    opts.on('-f FRETS', '--frets=FRETS', Integer, 'Number Of Frets') do |v| options[:frets] = v end
+    opts.on('-k KEY', '--key=KEY', String, 'Key You\'re Playing In') do |v| options[:key] = v end
+    opts.on('-m MODE', '--mode=MODE', String, 'Desired Mode') do |v| options[:mode] = v end
+end.parse!
+
+puts generate_fretboard options[:strings], options[:frets], options[:key], options[:mode]
